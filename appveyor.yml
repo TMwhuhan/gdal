@@ -7,10 +7,10 @@ environment:
   matrix:
   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     VS_VERSION: Visual Studio 15
-    platform: x86
+    platform: x64
   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
     VS_VERSION: Visual Studio 14
-    platform: x64
+    platform: x86
 
 shallow_clone: true
 
@@ -25,19 +25,20 @@ init:
       if($env:platform -eq "x86")
       {
         $env:PATH="c:\Python27;c:\Python27\Scripts;$env:PATH"
-        $env:VS_VER=2017
-        $env:SDK="release-1911"
-        $env:MSVC_VER=1911
+        $env:VS_VER=2015
+        $env:SDK="release-1900"
+        $env:MSVC_VER=1900
         $env:ARCHITECTURE="x86"
         $env:WIN64_ARG=""
         $env:VS_FULL="$env:VS_VERSION"
       }
       else
       {
+        
         $env:PATH="c:\Python27-x64;c:\Python27-x64\Scripts;$env:PATH"
-        $env:VS_VER=2015
-        $env:SDK="release-1900-x64"
-        $env:MSVC_VER=1900
+        $env:VS_VER=2017
+        $env:SDK="release-1911-x64"
+        $env:MSVC_VER=1911
         $env:ARCHITECTURE="amd64"
         $env:WIN64_ARG="WIN64=YES"
         $env:VS_FULL="$env:VS_VERSION Win64"
@@ -138,6 +139,7 @@ install:
       $env:NMAKE_LOCAL+="NETCDF_HAS_NC4 = yes`n"
       $env:NMAKE_LOCAL+="PROJ_INCLUDE=-I$env:APPVEYOR_BUILD_FOLDER\install-proj\include`n"
       $env:NMAKE_LOCAL+="PROJ_LIBRARY=$env:APPVEYOR_BUILD_FOLDER\install-proj\lib\proj_6_2.lib`n"
+      $env:NMAKE_LOCAL+="GDAL_HOME=$env:APPVEYOR_BUILD_FOLDER\install-proj\`n"
       $env:NMAKE_LOCAL | Set-Content "$env:APPVEYOR_BUILD_FOLDER\gdal\nmake.local"
       #
       cd $env:APPVEYOR_BUILD_FOLDER
@@ -164,6 +166,10 @@ install:
       exec { nmake /f makefile.vc MSVC_VER=$env:MSVC_VER $env:WIN64_ARG USER_DEFS=/WX }
       cd apps
       exec { nmake /f makefile.vc test_ogrsf.exe MSVC_VER=$env:MSVC_VER $env:WIN64_ARG USER_DEFS=/WX }
+      exec { nmake /f makefile.vc MSVC_VER=$env:MSVC_VER $env:WIN64_ARG USER_DEFS=/WX install}
+      exec { nmake /f makefile.vc MSVC_VER=$env:MSVC_VER $env:WIN64_ARG USER_DEFS=/WX devinstall}
+      cd $env:APPVEYOR_BUILD_FOLDER\install-proj
+      exec{ 7z a c:\projects\gdal.zip }
       $env:DISTUTILS_USE_SDK=1
       $env:MSSdk=1
       cd $env:APPVEYOR_BUILD_FOLDER\gdal\swig\python
@@ -176,6 +182,10 @@ install:
       exec { nmake /f makefile.vc MSVC_VER=$env:MSVC_VER $env:WIN64_ARG }
 
 build: off
+
+artifacts:
+- path: 'c:\projects\gdal.zip'
+  name: 'gdal'
 
 test_script:
   - ps: |
