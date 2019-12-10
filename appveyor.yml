@@ -164,10 +164,10 @@ install:
       cd $env:APPVEYOR_BUILD_FOLDER\gdal
       exec { copy $env:APPVEYOR_BUILD_FOLDER\install-proj\bin\proj_6_2.dll . }
       exec { nmake /f makefile.vc MSVC_VER=$env:MSVC_VER $env:WIN64_ARG USER_DEFS=/WX }
-      cd apps
-      exec { nmake /f makefile.vc test_ogrsf.exe MSVC_VER=$env:MSVC_VER $env:WIN64_ARG USER_DEFS=/WX }
       exec { nmake /f makefile.vc MSVC_VER=$env:MSVC_VER $env:WIN64_ARG USER_DEFS=/WX install }
       exec { nmake /f makefile.vc MSVC_VER=$env:MSVC_VER $env:WIN64_ARG USER_DEFS=/WX devinstall }
+      cd apps
+      exec { nmake /f makefile.vc test_ogrsf.exe MSVC_VER=$env:MSVC_VER $env:WIN64_ARG USER_DEFS=/WX }
       cd $env:APPVEYOR_BUILD_FOLDER\install-proj
       exec{ 7z a c:\projects\gdal.zip }
       $env:DISTUTILS_USE_SDK=1
