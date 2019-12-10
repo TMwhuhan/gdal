@@ -184,7 +184,7 @@ install:
 build: off
 
 artifacts:
-- path: 'c:\projects\gdal.zip'
+- path: '..\gdal.zip'
   name: 'gdal'
 
 test_script:
