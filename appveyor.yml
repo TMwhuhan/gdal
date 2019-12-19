@@ -7,7 +7,7 @@ environment:
   matrix:
   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     VS_VERSION: Visual Studio 15
-    platform: x64
+    platform: x86
   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
     VS_VERSION: Visual Studio 14
     platform: x86
@@ -35,13 +35,20 @@ init:
       else
       {
         
-        $env:PATH="c:\Python27-x64;c:\Python27-x64\Scripts;$env:PATH"
+        #$env:PATH="c:\Python27-x64;c:\Python27-x64\Scripts;$env:PATH"
+        #$env:VS_VER=2017
+        #$env:SDK="release-1911-x64"
+        #$env:MSVC_VER=1911
+        #$env:ARCHITECTURE="amd64"
+        #$env:WIN64_ARG="WIN64=YES"
+        #$env:VS_FULL="$env:VS_VERSION Win64"
+        $env:PATH="c:\Python27;c:\Python27\Scripts;$env:PATH"
         $env:VS_VER=2017
-        $env:SDK="release-1911-x64"
+        $env:SDK="release-1911"
         $env:MSVC_VER=1911
-        $env:ARCHITECTURE="amd64"
-        $env:WIN64_ARG="WIN64=YES"
-        $env:VS_FULL="$env:VS_VERSION Win64"
+        $env:ARCHITECTURE="x86"
+        $env:WIN64_ARG=""
+        $env:VS_FULL="$env:VS_VERSION"   
       }
       function exec
       {
